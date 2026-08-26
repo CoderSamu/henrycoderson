@@ -7,6 +7,7 @@
  * 
  * REVISED: 2026-08-26: Fixed create function issue
  * REVISED: 2026-08-26, 4:16 EST: Fixed activate, remove, and modify functions with the querySelector issue.
+ * REVISED: 2026-08-26, 4:23 EST: Fixed activate, remove, and modify functions with the ID issue. Use querySelector for IDs.
 */
 
 /** Page class */
@@ -80,7 +81,7 @@ class PageAPI {
 			document.querySelector('.html-page')[id].classList.add('active')
 		} else if (typeof id == 'string') { // Or HTML Id attribute
 			if (document.querySelector('#'+id).parentElement !== this.host) return;
-			document.querySelectorAll('#'+id).classList.add('active')
+			document.querySelector('#'+id).classList.add('active')
 		} else { // OhNoes!
 			throw new TypeError('Cannot execute activate function with an unknown type: ' + id);
 		}
@@ -96,7 +97,7 @@ class PageAPI {
 		// Or, remove by HTML ID attribute
 		} else if (typeof id == 'string') { 
 			this.host.removeChild(
-				document.querySelectorAll('#'+id)
+				document.querySelector('#'+id)
 			)
 		} else { // Throw an error for unknown methods
 			throw new TypeError('Cannot execute remove function with an unknown type: ' + id);
@@ -110,7 +111,7 @@ class PageAPI {
 			document.querySelectorAll('.html-page')[id].innerHTML = html;
 		// Or, modify by HTML ID attribute
 		} else if (typeof id == 'string') { 
-			document.querySelectorAll('#'+id).innerHTML = html;
+			document.querySelector('#'+id).innerHTML = html;
 		} else { // Throw an error for unknown methods
 			throw new TypeError('Cannot execute modify function with an unknown type: ' + id);
 		}
