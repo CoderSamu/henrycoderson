@@ -6,6 +6,7 @@
  * Copyright (c) Henry Coderson and all affiliates. All rights reserved.
  * 
  * REVISED: 2026-08-26: Fixed create function issue
+ * REVISED: 2026-08-26, 4:16 EST: Fixed activate, remove, and modify functions with the querySelector issue.
 */
 
 /** Page class */
@@ -79,7 +80,7 @@ class PageAPI {
 			document.querySelector('.html-page')[id].classList.add('active')
 		} else if (typeof id == 'string') { // Or HTML Id attribute
 			if (document.querySelector('#'+id).parentElement !== this.host) return;
-			document.querySelector('#'+id).classList.add('active')
+			document.querySelectorAll('#'+id).classList.add('active')
 		} else { // OhNoes!
 			throw new TypeError('Cannot execute activate function with an unknown type: ' + id);
 		}
@@ -90,12 +91,12 @@ class PageAPI {
 		// If chosen, remove page by number (0 index)
 		if (typeof id == 'number') {
 			this.host.removeChild(
-				document.querySelector('.html-page')[id]
+				document.querySelectorAll('.html-page')[id]
 			)
 		// Or, remove by HTML ID attribute
 		} else if (typeof id == 'string') { 
 			this.host.removeChild(
-				document.querySelector('#'+id)
+				document.querySelectorAll('#'+id)
 			)
 		} else { // Throw an error for unknown methods
 			throw new TypeError('Cannot execute remove function with an unknown type: ' + id);
@@ -106,10 +107,10 @@ class PageAPI {
 	modify (id, html) {
 		// If chosen, modify page by number (0 index)
 		if (typeof id == 'number') {
-			document.querySelector('.html-page')[id].innerHTML = html;
+			document.querySelectorAll('.html-page')[id].innerHTML = html;
 		// Or, modify by HTML ID attribute
 		} else if (typeof id == 'string') { 
-			document.querySelector('#'+id).innerHTML = html;
+			document.querySelectorAll('#'+id).innerHTML = html;
 		} else { // Throw an error for unknown methods
 			throw new TypeError('Cannot execute modify function with an unknown type: ' + id);
 		}
