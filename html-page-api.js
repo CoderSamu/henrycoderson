@@ -1,7 +1,7 @@
 /**
  * HTML PAGE API 1.0.0
  *
- * If any pages exist in an HTML file, this API can load, create, modify, and reload pages, along with some other features. The pages must have a host, preferably a <main> element. Page elements must be of class .html-page, otherwise, none of the API's features will work. Created 2026-08-25 by Henry Coderson, henry.js@outlook.com. 
+ * If any pages exist in an HTML file, this API can load, create, modify, and reload pages, along with some other features. The pages must have a host, preferably a <main> element. Page elements must [...]
  *
  * Copyright (c) Henry Coderson and all affiliates. All rights reserved.
  * 
@@ -21,9 +21,14 @@ class PageAPI {
 		// Throw this error when there ain't no host
 		if (!this.host || !(this.host instanceof Element)) throw new TypeError("Cannot assemble PageAPI without a host element, preferably <main> tag.");
 
+		// If pages wasn't provided or isn't a NodeList/Array, use a live NodeList from host
+		if (!this.pages || (!(this.pages instanceof NodeList) && !Array.isArray(this.pages))) {
+			this.pages = this.host.querySelectorAll(':scope > .html-page');
+		}
+
 		// Scan the pages
-		for (var i in this.pages) {
-			// Skip for loop objects
+		for (var i = 0; i < this.pages.length; i++) {
+			// Skip non-elements (defensive)
 			if (!(this.pages[i] instanceof Element)) continue;
 
 			// Represent the currently scanned page
@@ -60,12 +65,33 @@ class PageAPI {
 
 		// Add page to host
 		this.host.appendChild(div);
+
+		// Refresh pages collection so it's up-to-date (handles NodeList/Array cases)
+		try {
+			// If pages was an array, try to push; if NodeList, re-query to get live list
+			if (Array.isArray(this.pages)) {
+				this.pages.push(div);
+			} else {
+				this.pages = this.host.querySelectorAll(':scope > .html-page');
+			}
+		} catch (e) {
+			// Fallback: reassign to live NodeList
+			this.pages = this.host.querySelectorAll(':scope > .html-page');
+		}
+
+		// Return the created element for convenience
+		return div;
 	}
 
 	// Reveal or display a tab (id or number)
 	activate (id) {
-		// Scan all pages
-		for (var i in this.pages) {
+		// Ensure we operate on up-to-date pages
+		if (!this.pages || (!(this.pages instanceof NodeList) && !Array.isArray(this.pages))) {
+			this.pages = this.host.querySelectorAll(':scope > .html-page');
+		}
+
+		// Hide all pages
+		for (var i = 0; i < this.pages.length; i++) {
 			// Skip for loop objects
 			if (!(this.pages[i] instanceof Element)) continue;
 
@@ -78,10 +104,14 @@ class PageAPI {
 
 		// If chosen, activate page by number (0 index)
 		if (typeof id == 'number') {
-			document.querySelector('.html-page')[id].classList.add('active')
+			// Use host-scoped NodeList
+			let pages = this.host.querySelectorAll('.html-page');
+			if (id < 0 || id >= pages.length) throw new RangeError('Index out of range: ' + id);
+			pages[id].classList.add('active')
 		} else if (typeof id == 'string') { // Or HTML Id attribute
-			if (document.querySelector('#'+id).parentElement !== this.host) return;
-			document.querySelector('#'+id).classList.add('active')
+			let el = this.host.querySelector('#' + id);
+			if (!el || el.parentElement !== this.host) return;
+			el.classList.add('active')
 		} else { // OhNoes!
 			throw new TypeError('Cannot execute activate function with an unknown type: ' + id);
 		}
@@ -89,29 +119,48 @@ class PageAPI {
 
 	// Removes a page, either by id or number
 	remove (id) {
+		// Ensure we operate on up-to-date pages
+		if (!this.pages || (!(this.pages instanceof NodeList) && !Array.isArray(this.pages))) {
+			this.pages = this.host.querySelectorAll(':scope > .html-page');
+		}
+
 		// If chosen, remove page by number (0 index)
 		if (typeof id == 'number') {
+			let pages = this.host.querySelectorAll('.html-page');
+			if (id < 0 || id >= pages.length) throw new RangeError('Index out of range: ' + id);
 			this.host.removeChild(
-				document.querySelectorAll('.html-page')[id]
+				pages[id]
 			)
 		// Or, remove by HTML ID attribute
 		} else if (typeof id == 'string') { 
-			this.host.removeChild(
-				document.querySelector('#'+id)
-			)
+			let el = this.host.querySelector('#' + id);
+			if (!el || el.parentElement !== this.host) throw new Error('No page with id: ' + id);
+			this.host.removeChild(el)
 		} else { // Throw an error for unknown methods
 			throw new TypeError('Cannot execute remove function with an unknown type: ' + id);
 		}
+
+		// Refresh pages collection
+		this.pages = this.host.querySelectorAll(':scope > .html-page');
 	}
 
 	// Modify page content (html only)
 	modify (id, html) {
+		// Ensure we operate on up-to-date pages
+		if (!this.pages || (!(this.pages instanceof NodeList) && !Array.isArray(this.pages))) {
+			this.pages = this.host.querySelectorAll(':scope > .html-page');
+		}
+
 		// If chosen, modify page by number (0 index)
 		if (typeof id == 'number') {
-			document.querySelectorAll('.html-page')[id].innerHTML = html;
+			let pages = this.host.querySelectorAll('.html-page');
+			if (id < 0 || id >= pages.length) throw new RangeError('Index out of range: ' + id);
+			pages[id].innerHTML = html;
 		// Or, modify by HTML ID attribute
 		} else if (typeof id == 'string') { 
-			document.querySelector('#'+id).innerHTML = html;
+			let el = this.host.querySelector('#' + id);
+			if (!el || el.parentElement !== this.host) throw new Error('No page with id: ' + id);
+			el.innerHTML = html;
 		} else { // Throw an error for unknown methods
 			throw new TypeError('Cannot execute modify function with an unknown type: ' + id);
 		}
