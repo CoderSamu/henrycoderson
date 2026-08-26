@@ -4,6 +4,8 @@
  * If any pages exist in an HTML file, this API can load, create, modify, and reload pages, along with some other features. The pages must have a host, preferably a <main> element. Page elements must be of class .html-page, otherwise, none of the API's features will work. Created 2026-08-25 by Henry Coderson, henry.js@outlook.com. 
  *
  * Copyright (c) Henry Coderson and all affiliates. All rights reserved.
+ * 
+ * REVISED: 2026-08-26: Fixed create function issue
 */
 
 /** Page class */
@@ -38,8 +40,9 @@ class PageAPI {
 		let div = document.createElement('div');
 		div.classList.add('html-page');
 
+		let aType = typeof type == "string" ? type.toLowerCase() : type;
 		// Switch between modes 
-		switch (type.toLowerCase()) {
+		switch (aType) {
 			// HTML mode (innerHTML)
 			case "html":
 				div.innerHTML = content;
