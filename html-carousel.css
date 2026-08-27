@@ -1,0 +1,80 @@
+/*
+    HTML CAROUSEL CSS
+
+    Design a carousel with sliding images when paired with the html-carousel-api.js. Use to display articles that need a smoother, contained UI.
+
+    Copyright (c) 2026 Henry Coderson and all affiliates. All rights reserved
+*/
+
+/* For larger device screens, we set up the carousel */
+@media (min-width: 400px) {
+    /* Main Carousel foundation */
+    .html-carousel {
+        display: flex;
+                    
+        position: relative;
+                    
+        background-color: black;
+        min-height: 200px;
+        max-height: 400px;
+                    
+        width: 100%;
+                    
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .carousel-button {
+        position: absolute;
+        display: flex; 
+                        
+        background-color: #ffffffaa;
+        width: 7%;
+        max-width: 50px;
+        height: 100%;
+                        
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .carousel-button:hover { cursor: pointer; }
+    
+    .carousel-button span {
+        font-size: 48px;
+    }
+                    
+    .carousel-negative { left: 0% }
+    .carousel-positive { right: 0% }
+    
+    .html-carousel-set {
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-position: fixed;
+                        
+        width: 80%;
+        height: 100%;
+    	
+    	padding: 18px 26px;
+                        
+        overflow-y: hidden;
+    }
+    
+    .carousel-header-img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+
+        width: 225px;
+    }
+    
+    .carousel-set-header h2 {
+        color: #d1d9d4;
+        font-family: MuseoModerno, Audiowide, "Seida Semi Condensed", "AR Destine", "Trebuchet MS", Impact;
+        font-size: 32px;
+        text-align: center;
+    }
+
+    .carousel-set-body p {
+        color: #d1d4d9;
+    }
+}
