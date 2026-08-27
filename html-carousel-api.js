@@ -1,7 +1,7 @@
 /**
     * HTMLCarousel (API)
     *
-    * Use this alongside .html-carousel-api.css to have a sweet ol' carousel in no time! Notice that this API
+    * Use this alongside html-carousel.css to have a sweet ol' carousel in no time! Notice that this API
     * is a class, but only loads once everything on the entire page has loaded. For larger websites, this 
     * feature also comes with a loading spinner!
     *
@@ -48,8 +48,7 @@ if (!window.HTMLCarousel) {
 
             // Essentials for carousel movement
             this.index = 0;
-            this.total = this.sets.length;
-            this._autoSlideRunning =false;
+            this._autoSlideRunning = false;
             this._lastSlideTime = 0;
             this._autoSlideDelay = 10000; // default 10 seconds
 
@@ -60,13 +59,15 @@ if (!window.HTMLCarousel) {
             // Handle track
             if (!track) {
                 this.track = this.carousel.querySelector('.html-carousel-track');
+                if (!this.track || !(this.track instanceof Element)) {
+                    throw new TypeError("Failed to construct HTMLCarousel: carousel track not found; please include an element with class .html-carousel-track.");
+                }
             } else {
                 this.track = track;
-                if (!this.track?.classList.contains("html-carousel-track")) throw new TypeError("Failed to construct HTMLCarousel: the track is not a valid track; please use .html-carousel-track class.")
-                if(!(this.track instanceof Element)) throw new TypeError("Failed to constructor HTMLCarousel: no element was provided.")
+                if (!(this.track instanceof Element)) throw new TypeError("Failed to construct HTMLCarousel: no element was provided.")
+                if (!this.track.classList.contains("html-carousel-track")) throw new TypeError("Failed to construct HTMLCarousel: the track is not a valid track; please use .html-carousel-track class.");
             }
 
-            // Handle sets
             // Handle sets
             if (!sets) {
                 // Get all sets
@@ -91,6 +92,9 @@ if (!window.HTMLCarousel) {
                     }
                 }
             }
+
+            // Now we can safely compute total
+            this.total = this.sets ? this.sets.length : 0;
         }
 
         // Private slide maker
@@ -167,6 +171,10 @@ if (!window.HTMLCarousel) {
                 track.appendChild(set);
             }
 
+            // Update temp sets/total after adding slides
+            temp.sets = track.querySelectorAll('.html-carousel-set');
+            temp.total = temp.sets.length;
+
             // Create buttons
             const prev = document.createElement("div");
             prev.classList.add("carousel-button", "carousel-negative");
@@ -198,7 +206,7 @@ if (!window.HTMLCarousel) {
             } else { carousel = this.carousel; /* Default it */ }
 
             // Essentials
-            const track = carousel.querySelector('.html-carousel-track');
+            let track = carousel.querySelector('.html-carousel-track');
             if (!track) {
                 throw new TypeError("HTMLCarousel.modify(): Carousel track not found.");
             }
@@ -214,6 +222,10 @@ if (!window.HTMLCarousel) {
                 // And add it, too
                 track.appendChild(set);
             }
+
+            // Refresh sets/total
+            this.sets = track.querySelectorAll('.html-carousel-set');
+            this.total = this.sets.length;
         }
 
         // Delete an entire carousel
@@ -283,7 +295,7 @@ if (!window.HTMLCarousel) {
         
             // Mode 2: element
             else if (set instanceof Element) {
-                console.debug("HTMLCarousel.deleteSet(): Using an HTMLElement is non-standard and may be deprecated. It is recommended that you use indices instead. For more information, see the GitHub repository at https://www.github.com/CoderSamu/henrycoderson/issues");
+                console.debug("HTMLCarousel.deleteSet(): Using an HTMLElement is non-standard and may be deprecated. It is recommended that you use indices instead. For more information, see the GitHub project.");
         
                 // If it ain't valid, throw an error
                 if (!set.classList.contains("html-carousel-set")) {
@@ -307,6 +319,10 @@ if (!window.HTMLCarousel) {
         
             // Remove the set
             track.removeChild(target);
+
+            // Refresh sets/total
+            this.sets = track.querySelectorAll('.html-carousel-set');
+            this.total = this.sets.length;
         
             return true;
         }
@@ -325,7 +341,7 @@ if (!window.HTMLCarousel) {
             }
         
             // Try to get track
-            const track = carousel.querySelector('.html-carousel-track');
+            let track = carousel.querySelector('.html-carousel-track');
             if (!track) {
                 // When a track doesn't exist, we'll try to inherit the track.
                 track = this.track;
@@ -334,12 +350,14 @@ if (!window.HTMLCarousel) {
                     throw new TypeError("Error executing HTMLCarousel.slide(): carousel track was not found.");
                 }
             }
+
+            if (!this.total || this.total === 0) return this.index;
         
-            // Processes
-            if (this.type != "left"){
+            // Processes: use dir parameter (left means previous)
+            if (dir !== "left"){
                 this.index = (this.index + 1) % this.total;
             } else {
-                this.index = this.index = (this.index - 1 + this.total) % this.total;
+                this.index = (this.index - 1 + this.total) % this.total;
             }
         
             // Adding a smooth transformation.
@@ -370,7 +388,7 @@ if (!window.HTMLCarousel) {
             }
         
             // Continue loop
-            requestAnimationFrame(() => this._autoSlideLoop(carousel));
+            requestAnimationFrame(() => this.loop(carousel));
         }
 
         // Automatica Slide Timeout
@@ -411,7 +429,7 @@ if (!window.HTMLCarousel) {
                 // Negative (prev) interaction
                 negative.onclick = (tnev) => {
                     // Slide backwards
-                    this.slide(carousel, "right");
+                    this.slide(carousel, "left");
                 }
             },
 
@@ -439,12 +457,12 @@ if (!window.HTMLCarousel) {
                 var startX = 0;
                 
                 // When the carousel is touched, assign startX
-                carousel.ontouchstart = (evt) => startX = e.touches[0].clientX;
+                carousel.ontouchstart = (evt) => startX = evt.touches[0].clientX;
 
-                // When the touch his left
+                // When the touch ends
                 carousel.ontouchend = (evt) => {
                     // Calculate swipe and their movements
-                    const endX = e.changedTouches[0].clientX;
+                    const endX = evt.changedTouches[0].clientX;
                     const diff = endX - startX;
     
                     if (diff > 50) {
