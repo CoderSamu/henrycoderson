@@ -1,80 +1,93 @@
 /*
     HTML CAROUSEL CSS
 
-    Design a carousel with sliding images when paired with the html-carousel-api.js. Use to display articles that need a smoother, contained UI.
+    Design a carousel with sliding images when paired with the html-carousel-api.js. Use it to display articles that need a smoother, contained UI.
 
-    Copyright (c) 2026 Henry Coderson and all affiliates. All rights reserved
+    Copyright (c) 2026 Henry Coderson and all affiliates. All rights reserved.
+    REVISION: 2026-08-27, 12:18:39 EST: Fix various bugs, including the missing carousel track and the image centering issue
 */
 
 /* For larger device screens, we set up the carousel */
-@media (min-width: 400px) {
-    /* Main Carousel foundation */
+@media (min-width: 100px) {
     .html-carousel {
-        display: flex;
-                    
         position: relative;
-                    
-        background-color: black;
+
+        background-color: #212121;
         min-height: 200px;
         max-height: 400px;
-                    
+                
         width: 100%;
-                    
-        align-items: center;
-        justify-content: center;
+        overflow: hidden;
     }
-    
+                
+    .html-carousel-track {
+        display: flex;
+        width: 100%;
+        height: 100%;
+                    
+        transition: transform 0.6s ease; 
+    }
+                
     .carousel-button {
         position: absolute;
+        top: 0%;
         display: flex; 
-                        
+                    
         background-color: #ffffffaa;
         width: 7%;
-        max-width: 50px;
+        max-width: 75px;
         height: 100%;
-                        
+                    
         align-items: center;
         justify-content: center;
     }
-    
+                
     .carousel-button:hover { cursor: pointer; }
-    
+                
     .carousel-button span {
         font-size: 48px;
     }
-                    
+                
     .carousel-negative { left: 0% }
     .carousel-positive { right: 0% }
-    
+                
     .html-carousel-set {
-        background-size: 100%;
+        background-attachment: fixed;
+        background-size: cover;
         background-repeat: no-repeat;
-        background-position: fixed;
-                        
-        width: 80%;
+        background-position: center;
+                    
+        width: 100%;
         height: 100%;
-    	
-    	padding: 18px 26px;
-                        
+                    
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 18px 26px;
+                    
         overflow-y: hidden;
+        flex-shrink: 0;
     }
-    
+                
     .carousel-header-img {
         display: block;
         margin-left: auto;
         margin-right: auto;
-
+                    
         width: 225px;
     }
-    
+                
     .carousel-set-header h2 {
         color: #d1d9d4;
         font-family: MuseoModerno, Audiowide, "Seida Semi Condensed", "AR Destine", "Trebuchet MS", Impact;
         font-size: 32px;
         text-align: center;
     }
-
+                
     .carousel-set-body p {
         color: #d1d4d9;
     }
+}
+            
+@media (max-width: 99px) {
+    .html-carousel { display: none }
 }
