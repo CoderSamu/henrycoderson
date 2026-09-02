@@ -43,15 +43,14 @@ function resolveCarousel(carousel) {
 
 if (!window.HTMLCarousel) {
     window.HTMLCarousel = class {
-        constructor(carousel, track, sets) {
+        constructor(carousel, track, sets, timeout) {
             this.carousel = carousel;
 
             // Essentials for carousel movement
             this.index = 0;
             this._autoSlideRunning = false;
             this._lastSlideTime = 0;
-            this._autoSlideDelay = 10000; // default 10 seconds
-
+            this._autoSlideDelay = timeout || 10000; // default 10 seconds
 
             // Check if there is a carousel
             if (!this.carousel || !(this.carousel instanceof Element)) throw new TypeError("Failed to construct HTMLCarousel: a carousel element must be provided.")
@@ -445,10 +444,10 @@ if (!window.HTMLCarousel) {
                 // If the carousel is still not available
                 if (!carousel) throw new TypeError("Cannot read properties of undefined (reading 'carousel')");
 
-                // When carousel is hovered upon, stop the auto sliding.
+                // When the carousel is hovered over, stop the auto-sliding.
                 carousel.onmouseover = (evt) => THIS._autoSlideRunning = false;
 
-                // When mouse exits carousel, restart carousel at random time
+                // When the mouse exits carousel, restart carousel at a random time
                 carousel.onmouseout = (evt) => THIS.timeout(
                     10000, carousel
                 )        
