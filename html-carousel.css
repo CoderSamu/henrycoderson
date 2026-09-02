@@ -40,6 +40,10 @@
                     
         align-items: center;
         justify-content: center;
+
+        -webkit-user-select: none;
+           -moz-user-select: none;
+                user-select: none;
     }
                 
     .carousel-button:hover { cursor: pointer; }
