@@ -1,0 +1,67 @@
+/* Henry's Fancy Tables. 2026-09-02 11:11:56 AM EST. UNDER THE GNU **/
+
+/* Main Tables */
+table.henry-table {
+    background: #efefef;
+    color: #212121;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 14px;
+                
+    width: 100%;
+    border-collapse: collapse;
+            
+    border: 2px solid #d1d1d1 !important;
+    border-radius: 8px;
+                
+    overflow: hidden;
+}
+            
+/* Headers me up */
+table.henry-table thead {
+    background: #e9e9e9;
+}
+            
+/* For Particular Headings */
+table.henry-table thead th {
+    font-size: 12.8px;
+    letter-spacing: 0.74px;
+    text-align: left;
+    text-transform: uppercase;
+                
+    padding: 15px 18px;
+                
+    -webkit-user-select: none;
+        -moz-user-select: none;
+            user-select: none;
+    }
+            
+    table.henry-table tbody td {
+        border-top: 2px solid #d4d4d4;
+        padding: 14px 20px;
+                
+        -webkit-user-select: none;
+            -moz-user-select: none;
+                user-select: none;
+    }
+            
+    /* ODD-EVEN STYLINGG */
+    table.henry-table tbody tr:nth-child(odd) { background: #f1f1f9; }
+            
+    table.henry-table tbody tr:nth-child(even) { background: #d9e9d9; }
+            
+    table.henry-table tbody tr { transition: 0.4s all ease }
+            
+    table.henry-table tbody tr:hover {
+        background: #e0e0e0;
+    }
+            
+    /* Makes sure there aren't any unnecessary borders */
+    table.henry-table th,
+    table.henry-table td {
+        border-right: 1px solid #d0d0d0;
+    }
+            
+    table.henry-table th:last-child,
+    table.henry-table td:last-child {
+        border-right: none;
+    }
